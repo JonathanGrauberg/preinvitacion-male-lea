@@ -1,0 +1,19 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        'marron-100': '#aa9273',
+        'yellow-100': '#FFF3B0',
+        'yellow-200': '#FFD95A',
+        'blackligth': '#1A1A1A',
+        'grayligth': '#CCCCCC',
+        'grayblack': '#999999',
+      },
+    },
+  },
+  plugins: [],
+};
