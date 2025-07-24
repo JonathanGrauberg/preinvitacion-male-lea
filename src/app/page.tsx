@@ -98,13 +98,13 @@ export default function Home() {
 
 
   {/* Tarjetas en fila siempre */}
-<div className="flex flex-wrap justify-center gap-6 mt-4">
+<div className="flex flex-wrap justify-center gap-6 mt-4 sm:gap-10">
   {/* Música */}
   <div
     onClick={() => {
       window.open('https://forms.gle/pMTxebtFZ1qGcBBQ8', '_blank') // <-- Cambiá el enlace real si querés
     }}
-    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition hover:scale-105"
+    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
   >
     <p className="text-xs sm:text-base font-semibold text-white mb-2">MÚSICA</p>
     <img src="/icons/music.svg" alt="Música" className="w-12 h-12 sm:w-17 sm:h-17" />
@@ -115,7 +115,7 @@ export default function Home() {
     onClick={() => {
       alert('Próximamente les enviaremos información sobre la vestimenta. ✨')
     }}
-    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition hover:scale-105"
+    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
   >
     <p className="text-xs sm:text-base font-semibold text-white mb-2">VESTIMENTA</p>
     <img src="/icons/tie.svg" alt="Vestimenta" className="w-12 h-12 sm:w-17 sm:h-17" />
@@ -126,7 +126,7 @@ export default function Home() {
     onClick={() => {
       alert('¡Estamos muy felices y queremos que estés en este momento tan importante para nosotros! 🥰\n\nDentro de poco te enviaremos toda la información.')
     }}
-    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition hover:scale-105"
+    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
   >
     <p className="text-xs sm:text-base font-semibold text-white mb-2 whitespace-nowrap">MÁS INFO</p>
     <img src="/icons/info.svg" alt="Más Info" className="w-12 h-12 sm:w-17 sm:h-17" />
