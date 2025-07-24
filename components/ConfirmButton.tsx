@@ -2,10 +2,7 @@
 
 export default function ConfirmButton() {
   const handleClick = () => {
-    const phone = '+5493434065637'; 
-    const message = encodeURIComponent('Hola Male y Lea! Confirmo mi asistencia al casamiento 🎉💍');
-    const url = `https://wa.me/${phone}?text=${message}`;
-
+    const url = 'https://forms.gle/59G52pFRRwuJ9F2p7'; 
     window.open(url, '_blank');
   };
 

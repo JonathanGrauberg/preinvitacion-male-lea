@@ -2,12 +2,7 @@
 
 export default function SuggestSongButton() {
   const handleClick = () => {
-    const phone = '+5493434662121'; 
-    const message = encodeURIComponent(
-      '¡Hola Male y Lea! 🎶 Quiero sugerir esta canción para la fiesta: '
-    );
-    const url = `https://wa.me/${phone}?text=${message}`;
-
+    const url = 'https://forms.gle/pMTxebtFZ1qGcBBQ8'; 
     window.open(url, '_blank');
   };
 

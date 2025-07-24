@@ -1,9 +1,14 @@
+'use client'
+
+
 import { Playfair_Display } from 'next/font/google'
 import { Great_Vibes } from 'next/font/google'
 import CalendarButton from '../../components/CalendarButton'
 import ConfirmButton from '../../components/ConfirmButton'
 import SuggestSongButton from '../../components/SuggestSongButton'
 import InfoButton from '../../components/InfoButton'
+import Countdown from '../../components/Countdown'
+
 
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
@@ -65,6 +70,8 @@ export default function Home() {
       </section>
 
     <section className="flex flex-col items-center gap-6 mt-12">
+
+      
   {/* Puntos grises cuadrados */}
   <div className="flex gap-3">
     <div className="w-3 h-3 bg-gray-500" />
@@ -72,26 +79,60 @@ export default function Home() {
     <div className="w-3 h-3 bg-gray-500" /> 
   </div>
 
+  <section className="text-center mt-16 px-4 items-center">
+  <h3 className="text-xl font-light text-grayblack mb-2">UBICACIÓN DE LA CELEBRACIÓN</h3>
+
+  <p className="text-marron-100 text-lg mb-4 font-semibold">
+    Acceso Norte y JL Borges, Paraná, E.R.
+  </p>
+
+  <a
+    href="https://maps.app.goo.gl/Tm3PQLU6gV4ZmMH29"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block border border-marron-100 text-grayblack px-6 py-2 rounded text-sm hover:bg-marron-100 hover:text-black transition"
+  >
+    Ver en el mapa
+  </a>
+</section>
+
+
   {/* Tarjetas en fila siempre */}
-  <div className="flex flex-wrap justify-center gap-6 mt-4">
-    {/* Música */}
-    <div className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center w-22 sm:w-32 h-36 sm:h-40 shadow-md">
-      <p className="text-xs sm:text-base font-semibold text-white mb-2">MÚSICA</p>
-      <img src="/icons/music.svg" alt="Música" className="w-12 h-12 sm:w-17 sm:h-17" />
-    </div>
-
-    {/* Vestimenta */}
-    <div className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center w-22 sm:w-32 h-36 sm:h-40 shadow-md">
-      <p className="text-xs sm:text-base font-semibold text-white mb-2">VESTIMENTA</p>
-      <img src="/icons/tie.svg" alt="Vestimenta" className="w-12 h-12 sm:w-17 sm:h-17" />
-    </div>
-
-    {/* Más Info */}
-    <div className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center w-22 sm:w-32 h-36 sm:h-40 shadow-md">
-      <p className="text-xs sm:text-base font-semibold text-white mb-2 whitespace-nowrap">MÁS INFO</p>
-      <img src="/icons/info.svg" alt="Más Info" className="w-12 h-12 sm:w-17 sm:h-17" />
-    </div>
+<div className="flex flex-wrap justify-center gap-6 mt-4">
+  {/* Música */}
+  <div
+    onClick={() => {
+      window.open('https://forms.gle/pMTxebtFZ1qGcBBQ8', '_blank') // <-- Cambiá el enlace real si querés
+    }}
+    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition hover:scale-105"
+  >
+    <p className="text-xs sm:text-base font-semibold text-white mb-2">MÚSICA</p>
+    <img src="/icons/music.svg" alt="Música" className="w-12 h-12 sm:w-17 sm:h-17" />
   </div>
+
+  {/* Vestimenta */}
+  <div
+    onClick={() => {
+      alert('Próximamente les enviaremos información sobre la vestimenta. ✨')
+    }}
+    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition hover:scale-105"
+  >
+    <p className="text-xs sm:text-base font-semibold text-white mb-2">VESTIMENTA</p>
+    <img src="/icons/tie.svg" alt="Vestimenta" className="w-12 h-12 sm:w-17 sm:h-17" />
+  </div>
+
+  {/* Más Info */}
+  <div
+    onClick={() => {
+      alert('¡Estamos muy felices y queremos que estés en este momento tan importante para nosotros! 🥰\n\nDentro de poco te enviaremos toda la información.')
+    }}
+    className="bg-marron-100 mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition hover:scale-105"
+  >
+    <p className="text-xs sm:text-base font-semibold text-white mb-2 whitespace-nowrap">MÁS INFO</p>
+    <img src="/icons/info.svg" alt="Más Info" className="w-12 h-12 sm:w-17 sm:h-17" />
+  </div>
+</div>
+
 </section>
 
 <section className="text-center text-gray-300 mt-16 px-4 items-center">
@@ -111,8 +152,20 @@ export default function Home() {
     <span className={`${greatVibes.className} text-4xl sm:text-5xl text-grayblack`}>Podés faltar!</span>
   </p>
   <ConfirmButton />
+  <Countdown />
 </section>
 
+      <section className="text-center text-gray-300 mt-16 px-4 items-center">
+          <h3 className="text-xl font-light text-grayblack mb-2">¿Querés hacernos un regalo?</h3>
+
+          <p className="text-marron-100 text-lg font-semibold mb-4">
+            Alias CBU: <span className="block text-grayblack mt-1">leaymale.boda</span>
+          </p>
+
+          <p className="text-sm text-gray-400 max-w-xs mx-auto">
+          Si deseás hacernos un regalo, este alias está habilitado para recibir transferencias. ¡Gracias por acompañarnos en este momento especial!
+          </p>
+      </section>
 
     {/* BOTONES */}
       <div className="flex flex-col sm:flex-row gap-4 mb-10 mt-28">
@@ -127,7 +180,7 @@ export default function Home() {
         className="w-full mb-4" 
       />
 
-      <h2 className={`${greatVibes.className} mt-5 text-7xl sm:text-5xl text-marron-100`}>Male y Lea</h2>
+      <h2 className={`${greatVibes.className} mt-2 mb-20 text-5xl sm:text-5xl text-marron-100`}>Male y Lea</h2>
 
 
     </main>
