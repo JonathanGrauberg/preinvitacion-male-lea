@@ -41,7 +41,7 @@ export default function InfoButton() {
     <div className="flex flex-col items-center">
       <button
         onClick={() => setShowOptions(!showOptions)}
-        className="w-64 mx-auto text-[1vh] tracking-wide uppercase border border-marron-100 text-grayblack px-6 py-2 rounded transition-colors duration-300 hover:bg-marron-100 hover:text-black"
+          className="w-[170px] h-[30px] text-[0.8rem] border border-doradoboda text-grayblack rounded flex items-center justify-center hover:bg-doradoboda hover:text-white transition"
       >
         ¿Dónde me alojo?
       </button>

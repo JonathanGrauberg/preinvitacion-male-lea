@@ -17,7 +17,7 @@ export default function CalendarButton() {
   return (
     <button
       onClick={handleClick}
-      className="inline-block text-[1vh] tracking-wide uppercase border border-marron-100 text-grayblack px-6 py-2 rounded transition-colors duration-300 hover:bg-marron-100 hover:text-black"
+          className="w-[170px] h-[30px] text-[0.8rem] border border-doradoboda text-grayblack rounded flex items-center justify-center hover:bg-doradoboda hover:text-white transition"
     >
       Agendar celebración
     </button>

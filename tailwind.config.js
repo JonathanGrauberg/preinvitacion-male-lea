@@ -6,6 +6,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'doradoboda': '#d5b36b',
+        'cards-color': '#d4c4af',
         'marron-100': '#aa9273',
         'yellow-100': '#FFF3B0',
         'yellow-200': '#FFD95A',
