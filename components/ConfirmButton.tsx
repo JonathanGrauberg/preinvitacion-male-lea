@@ -2,7 +2,7 @@
 
 export default function ConfirmButton() {
   const handleClick = () => {
-    const url = 'https://forms.gle/59G52pFRRwuJ9F2p7'; 
+    const url = 'https://forms.gle/c1Dfi2KMqA4GQLoC8'; 
     window.open(url, '_blank');
   };
 

@@ -20,9 +20,9 @@ export default function Home() {
       <img src="/img/encabezado.png" alt="Anillos" className="w-full sm:w-[200px] mb-2" />
       <p className="text-black text-xl px-20 py-20 mb-auto mt-[-6em]">Un sí para toda la vida</p>
       <img src="/icons/ML.svg" alt="Anillos" className="w-[170px] sm:w-[200px] mb-2" />
-      <p className="text-black px-20 py-20 mb-10">Después de tanto buscarnos nos encontramos,
-        ahora nos elegimos y decidimos caminar juntos
-        la vida... nada sería igual sin vos en este día
+      <p className="text-black px-20 py-20 mb-10 w-auto">Después de tanto buscarnos nos encontramos,<br />
+        ahora nos elegimos y decidimos caminar juntos<br />
+        la vida... nada sería igual sin vos en este día<br />
         tan importante para nosotros.</p> 
 
       <p className="mb-5 text-[1.5rem] text-marron-100 uppercase tracking-widest">Día</p>
@@ -48,7 +48,7 @@ export default function Home() {
 
         {/* Caja 3 */}
         <button
-          onClick={() => window.open('https://forms.gle/xxxxxxx', '_blank')} // Reemplazá con tu link real
+          onClick={() => window.open('https://forms.gle/n2cP8u7BhHEDnMKQ7', '_blank')} // Reemplazá con tu link real
           className="w-[170px] h-[30px] border border-doradoboda text-grayblack rounded flex items-center justify-center hover:bg-doradoboda hover:text-white transition"
         >
           <span className="text-[0.7rem]">CONFIRMAR ASISTENCIA</span>
@@ -69,7 +69,7 @@ export default function Home() {
 
         {/* Caja 3 */}
         <button
-          onClick={() => window.open('https://forms.gle/xxxxxxx', '_blank')} // Reemplazá con tu link real
+          onClick={() => window.open('https://forms.gle/c1Dfi2KMqA4GQLoC8', '_blank')} // Reemplazá con tu link real
           className="w-[170px] h-[30px] border border-doradoboda text-grayblack rounded flex items-center justify-center hover:bg-doradoboda hover:text-white transition"
         >
           <span className="text-[0.7rem]">CONFIRMAR ASISTENCIA</span>
@@ -90,7 +90,7 @@ export default function Home() {
 
         {/* Caja 3 */}
         <button
-          onClick={() => window.open('https://forms.gle/xxxxxxx', '_blank')} // Reemplazá con tu link real
+          onClick={() => window.open('https://maps.app.goo.gl/gXDVLLEXV9E3pWCL9', '_blank')} // Reemplazá con tu link real
           className="w-[170px] h-[30px] border border-marron-100 text-grayblack rounded flex items-center justify-center hover:bg-doradoboda hover:text-white transition"
         >
           <span className="text-[0.7rem]">COMO LLEGAR</span>
@@ -129,8 +129,9 @@ export default function Home() {
   {/* Vestimenta */}
     <div
       onClick={() => {
-        alert('Próximamente les enviaremos información sobre la vestimenta. ✨')
-      }}
+      const target = document.getElementById('requisitos');
+      target?.scrollIntoView({ behavior: 'smooth' });
+    }}
       className="bg-cards-color mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
     >
       <p className="text-xs sm:text-base font-semibold text-white mb-2">VESTIMENTA</p>
@@ -140,8 +141,9 @@ export default function Home() {
     {/* Más Info */}
     <div
       onClick={() => {
-        alert('¡Estamos muy felices y queremos que estés en este momento tan importante para nosotros! 🥰\n\nDentro de poco te enviaremos toda la información.')
-      }}
+      const target = document.getElementById('requisitos');
+      target?.scrollIntoView({ behavior: 'smooth' });
+    }}
       className="bg-cards-color mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
     >
       <p className="text-xs sm:text-base font-semibold text-white mb-2 whitespace-nowrap">MÁS INFO</p>
@@ -171,28 +173,24 @@ export default function Home() {
       <img src="/img/ovalo.png" alt="Anillos" className="mt-[6rem] w-full sm:w-[200px] mb-4" />
       <img src="/icons/maleylea.svg" alt="Anillos" className="mt-auto w-[300px] sm:w-[200px] mb-4" />
 
-      <section className="text-center text-gray-300 mt-16 px-4 items-center mb-12">
-        <ConfirmButton />
-        
+      <section className="text-center text-gray-300 mt-16 px-4 items-center mb-5">
+        <ConfirmButton />   
       </section>
 
-      <div className="mt-16 px-4 py-6 bg-[#111] text-white text-center rounded-lg max-w-xl mx-auto">
-        <p className="text-lg font-medium text-yellow-500 mb-4">
-          Estamos realmente emocionados por compartir este momento con ustedes
-        </p>
-        <p className="text-sm text-white leading-relaxed">
-          🪙 Un detalle especial
-Traé una monedita (sí, aunque suene raro 😄). El motivo te lo vamos a contar en la fiesta… pero confiá: es parte de algo lindo que queremos compartir con vos.
+      <section className="text-center text-gray-300 mt-0 px-4 items-center mb-12">
+        <SuggestSongButton />   
+      </section>
 
-👗 Vestimenta
-Elegante, pero con onda y comodidad. Queremos que vengas con tu estilo, ese que te haga sentir bien, bailar sin frenos y disfrutar toda la noche.
-
-✅ Confirmación de asistencia
-Podés confirmar hasta principios de septiembre, así nos ayudás a organizar todo con tiempo. ¡Gracias!
-        </p>
+      <div id="tarjetacosto" className="p-6">
+        <img src="/img/tarjetacosto.png" alt="tarjetacosto" className="shadow-xl mt-20 h-auto w-[600px] sm:w-[400px] mb-0" />
       </div>
 
-      <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-2" />
+      <div id="requisitos" className="p-6">
+        <img src="/img/requisitos.png" alt="requisitos" className="shadow-xl mt-20 h-auto max-w-auto sm:w-[400px] mb-2" />
+      </div>
+      
+
+      <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
       
       
 

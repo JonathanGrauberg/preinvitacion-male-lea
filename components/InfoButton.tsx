@@ -34,6 +34,12 @@ export default function InfoButton() {
     {
       nombre: 'Hotel San Jorge',
       url: 'https://share.google/2MTm1OjiATTsOFwtY',
+      
+    },
+    {
+      nombre: 'Hotel Posta Del Sol',
+      url: 'https://maps.app.goo.gl/pdgwcNoSwaNT24Xz5',
+      
     },
   ]
 

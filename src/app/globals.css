@@ -58,10 +58,12 @@ body {
 .book {
   position: relative;
   border-radius: 10px;
-  width: 220px;
-  height: 300px;
-  background-color: whitesmoke;
-  box-shadow: 1px 1px 12px #000;
+  width: 320px;
+  height: 400px;
+  background-image: url('/img/tapalibro.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   perspective: 2000px;
   display: flex;
   align-items: center;
@@ -73,7 +75,6 @@ body {
 .cover {
   position: absolute;
   top: 0;
-  background-color: lightgray;
   width: 100%;
   height: 100%;
   border-radius: 10px;
@@ -84,6 +85,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-image: url('/img/tapalibro.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .book:hover .cover,

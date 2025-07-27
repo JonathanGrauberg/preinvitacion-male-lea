@@ -37,9 +37,9 @@ export default function LibroAnimado() {
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && handleClick()}
     >
-      <p>Entrá</p>
+      
       <div className="cover">
-        <p>Ver recuerdos</p>
+       
       </div>
     </div>
   )
