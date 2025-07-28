@@ -26,11 +26,10 @@ body {
 
 .grid-container {
   margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  grid-template-columns: repeat(auto-fill, 230px);
+  display: grid; /* 🟢 Cambiamos de flex a grid */
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adaptativo */
   gap: 20px;
+  justify-items: center;
 }
 
 .grid-item {
@@ -60,7 +59,7 @@ body {
   border-radius: 10px;
   width: 320px;
   height: 400px;
-  background-image: url('/img/tapalibro.png');
+  background-image: url('/img/paginalibro.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
