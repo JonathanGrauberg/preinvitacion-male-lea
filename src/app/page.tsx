@@ -17,7 +17,7 @@ const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 export default function Home() {
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center">
-      <img src="/img/encabezado.png" alt="Anillos" className="w-full sm:w-[200px] mb-2" />
+      <img src="/img/encabezado.png" alt="Anillos" className="w-full h-1600 sm:w-[200px] mb-2" />
       <p className="text-black text-xl px-20 py-20 mb-auto mt-[-6em]">Un sí para toda la vida</p>
       <img src="/icons/ML.svg" alt="Anillos" className="w-[170px] sm:w-[200px] mb-2" />
       <p className="text-black px-20 py-20 mb-10 w-auto">Después de tanto buscarnos nos encontramos,<br />
