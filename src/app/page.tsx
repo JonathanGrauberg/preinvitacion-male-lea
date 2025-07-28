@@ -9,12 +9,14 @@ import InfoButton from '../../components/InfoButton'
 import Countdown from '../../components/Countdown'
 import MoreButton from '../../components/MoreButton'
 import LibroAnimado from '../../components/LibroAnimado'
+import { useState } from 'react'
 
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
 const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 
 export default function Home() {
+   const [showVestimentaText, setShowVestimentaText] = useState(false)
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center">
       <img src="/img/encabezado.png" alt="Anillos" className="w-full h-1600 sm:w-[200px] mb-2" />
@@ -97,7 +99,8 @@ export default function Home() {
         </button>
       </section>
 
-      <h3 className="text-center text-black text-[1rem] mb-4 mt-[10rem]">INSTANTES ETERNOS</h3>
+      <img src="/icons/camara.gif" alt="Alojamiento" className="w-20 h-20 mx-auto mb-0 mt-20" />
+      <h3 className="text-center text-black text-[1rem] mb-4 mt-0">INSTANTES ETERNOS</h3>
 
       <div>
         <LibroAnimado />
@@ -123,20 +126,28 @@ export default function Home() {
     className="bg-cards-color mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
   >
     <p className="text-xs sm:text-base font-semibold text-white mb-2">MÚSICA</p>
-    <img src="/icons/music.svg" alt="Música" className="w-12 h-12 sm:w-17 sm:h-17" />
+    <img src="/icons/music.svg" alt="Música" className="w-12 h-12 mr-3 sm:w-17 sm:h-17" />
   </div>
 
-  {/* Vestimenta */}
-    <div
-      onClick={() => {
-      const target = document.getElementById('requisitos');
-      target?.scrollIntoView({ behavior: 'smooth' });
-    }}
-      className="bg-cards-color mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
-    >
-      <p className="text-xs sm:text-base font-semibold text-white mb-2">VESTIMENTA</p>
-      <img src="/icons/tie.svg" alt="Vestimenta" className="w-12 h-12 sm:w-17 sm:h-17" />
-    </div>
+      {/* Vestimenta */}
+        <div className="flex items-center">
+          <div
+            onClick={() => setShowVestimentaText((prev) => !prev)} // <-- toggle
+            className={`bg-cards-color mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition-all duration-300 sm:w-[117px] sm:h-[138px] hover:scale-105 ${
+              showVestimentaText ? 'translate-x-[-130%]' : ''
+            }`}
+          >
+            <p className="text-xs sm:text-base font-semibold text-white mb-2">VESTIMENTA</p>
+            <img src="/icons/tie.svg" alt="Vestimenta" className="w-12 h-12 sm:w-17 sm:h-17" />
+          </div>
+
+          {/* Texto desplegable */}
+          {showVestimentaText && (
+            <div className="absolute left-[40%] mt-10 bg-grayblack text-white rounded-lg px-3 py-4 w-[210px] h-[200px] shadow-md sm:w-[250px] sm:h-[138px] flex items-center justify-center text-center transition-all duration-400">
+              Elegante, pero con onda y comodidad. Queremos que vengas con tu estilo, ese que te haga sentir bien, bailar sin frenos y disfrutar toda la noche.
+            </div>
+          )}
+        </div>
 
     {/* Más Info */}
     <div
@@ -150,14 +161,14 @@ export default function Home() {
       <img src="/icons/info.svg" alt="Más Info" className="w-12 h-12 sm:w-17 sm:h-17" />
     </div> 
 </div>  
-
 </section>
+
       <section className="text-center text-gray-300 mt-16 px-4 items-center">
         <h3 className="text-xl font-light text-black mb-2">REGALOS</h3>
         <p className="max-w-[15rem] text-[0.8rem] sm:text-base text-marron-100 mb-6 mx-auto text-center">
           Si deseas regalarnos algo más que tu presencia...
         </p>
-        <img src="/icons/regalo.svg" alt="Alojamiento" className="w-20 h-20 mx-auto mb-4" />
+        <img src="/icons/regalo.gif" alt="Alojamiento" className="w-20 h-20 mx-auto mb-4" />
         <MoreButton />
       </section>
 
@@ -166,19 +177,23 @@ export default function Home() {
         <p className="max-w-[13rem] text-[0.8rem] sm:text-base text-marron-100 mb-6 mx-auto text-center">
           Te proporcionamos los mejores lugares para tu estadía, así pueden reservar con anticipación
         </p>
-        <img src="/icons/alojamiento.svg" alt="Alojamiento" className="w-20 h-20 mx-auto mb-4" />
+        <img src="/icons/alojamiento.gif" alt="Alojamiento" className="w-20 h-20 mx-auto mb-4" />
         <InfoButton />
       </section>
 
-      <img src="/img/ovalo.png" alt="Anillos" className="mt-[6rem] w-full sm:w-[200px] mb-4" />
-      <img src="/icons/maleylea.svg" alt="Anillos" className="mt-auto w-[300px] sm:w-[200px] mb-4" />
+      <img src="/img/ovalo.png" alt="ovalo" className="mt-[6rem] w-full sm:w-[200px] mb-4" />
+      <img src="/icons/maleylea.svg" alt="maleylea" className="mt-auto w-[300px] sm:w-[200px] mb-4" />
 
       <section className="text-center text-gray-300 mt-16 px-4 items-center mb-5">
         <ConfirmButton />   
       </section>
 
-      <section className="text-center text-gray-300 mt-0 px-4 items-center mb-12">
+      <section className="text-center text-gray-300 mt-0 px-4 items-center mb-0">
         <SuggestSongButton />   
+      </section>
+
+      <section className="text-center text-gray-300 mt-0 px-4 items-center mb-12">
+        <Countdown />   
       </section>
 
       <div id="tarjetacosto" className="p-6">

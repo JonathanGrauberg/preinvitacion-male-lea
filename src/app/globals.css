@@ -73,7 +73,7 @@ body {
   border-radius: 10px;
   width: 320px;
   height: 400px;
-  background-image: url('/img/paginalibro.png');
+  background-image: url('/img/album.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -94,11 +94,11 @@ body {
   cursor: pointer;
   transform-origin: 0;
   transition: all 0.5s;
-  box-shadow: 1px 1px 12px #000;
+  box-shadow: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('/img/tapalibro.png');
+  background-image: none;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -113,3 +113,13 @@ body {
   font-size: 20px;
   font-weight: bold;
 }
+
+.parallax-container {
+  background-image: url('/img/ovaloimage.png'); /* Imagen cuadrada */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  z-index: 1; /* Fondo detrás del marco */
+}
+
