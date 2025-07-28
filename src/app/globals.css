@@ -24,26 +24,26 @@ body {
 
 /* styles/globals.css */
 
+/* globals.css */
+
 .grid-container {
   margin: 0 auto;
-  display: grid; /* 🟢 Cambiamos de flex a grid */
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adaptativo */
-  gap: 20px;
-  justify-items: center;
+  column-count: 3; /* 3 columnas por defecto */
+  column-gap: 20px;
+  max-width: 800px; /* opcional, para centrar mejor */
 }
 
 .grid-item {
   width: 100%;
-  max-width: 230px;
-  margin: 10px;
+  margin-bottom: 20px;
   border-radius: 15px;
   cursor: zoom-in;
   background-color: rgb(243, 238, 219);
   transition: transform 0.2s ease, filter 0.3s ease;
   filter: grayscale(100%);
+  display: block;
 }
 
-/* Hover efecto solo para computadoras */
 @media (hover: hover) {
   .grid-item:hover {
     opacity: 0.9;
@@ -51,6 +51,20 @@ body {
     filter: grayscale(0%);
   }
 }
+
+/* Responsivo: 2 columnas en tablets y 1 en móvil */
+@media (max-width: 768px) {
+  .grid-container {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-container {
+    column-count: 1;
+  }
+}
+
 
 
 /* From Uiverse.io by eslam-hany */ 

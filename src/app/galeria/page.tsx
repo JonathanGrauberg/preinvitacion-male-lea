@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 const imageUrls = Array.from({ length: 30 }, (_, i) => `/galeriaswiper/${i + 1}.jpeg`)
@@ -8,33 +8,14 @@ const imageUrls = Array.from({ length: 30 }, (_, i) => `/galeriaswiper/${i + 1}.
 export default function GaleriaPinterest() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
-  useEffect(() => {
-    import('masonry-layout').then((MasonryModule) => {
-      const Masonry = MasonryModule.default
-      const grid = document.querySelector('.grid-container')
-      if (grid) {
-        new Masonry(grid, {
-          itemSelector: '.grid-item',
-          columnWidth: 230,
-          gutter: 20,
-          isFitWidth: true,
-        })
-      }
-    })
-  }, [])
-
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (selectedIndex !== null) {
-      setSelectedIndex((prev) => (prev! > 0 ? prev! - 1 : imageUrls.length - 1))
-    }
+    setSelectedIndex((prev) => (prev! > 0 ? prev! - 1 : imageUrls.length - 1))
   }
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (selectedIndex !== null) {
-      setSelectedIndex((prev) => (prev! < imageUrls.length - 1 ? prev! + 1 : 0))
-    }
+    setSelectedIndex((prev) => (prev! < imageUrls.length - 1 ? prev! + 1 : 0))
   }
 
   return (
@@ -52,7 +33,6 @@ export default function GaleriaPinterest() {
             src={src}
             className="grid-item"
             alt={`Imagen ${index + 1}`}
-            width={230}
             loading="lazy"
             onClick={() => setSelectedIndex(index)}
           />
@@ -75,10 +55,7 @@ export default function GaleriaPinterest() {
             <X size={30} />
           </button>
 
-          <button
-            className="absolute left-5 text-white"
-            onClick={handlePrev}
-          >
+          <button className="absolute left-5 text-white" onClick={handlePrev}>
             <ChevronLeft size={40} />
           </button>
 
@@ -88,10 +65,7 @@ export default function GaleriaPinterest() {
             className="max-w-[90%] max-h-[90%] rounded-lg shadow-lg"
           />
 
-          <button
-            className="absolute right-5 text-white"
-            onClick={handleNext}
-          >
+          <button className="absolute right-5 text-white" onClick={handleNext}>
             <ChevronRight size={40} />
           </button>
         </div>
