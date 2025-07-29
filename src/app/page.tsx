@@ -1,5 +1,4 @@
 'use client'
-
 import { Playfair_Display } from 'next/font/google'
 import { Great_Vibes } from 'next/font/google'
 import CalendarButton from '../../components/CalendarButton'
@@ -9,7 +8,7 @@ import InfoButton from '../../components/InfoButton'
 import Countdown from '../../components/Countdown'
 import MoreButton from '../../components/MoreButton'
 import LibroAnimado from '../../components/LibroAnimado'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
@@ -17,8 +16,28 @@ const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 
 export default function Home() {
    const [showVestimentaText, setShowVestimentaText] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const audioRef = useRef<HTMLAudioElement>(null)
+
+    const handlePlayMusic = () => {
+    audioRef.current?.play()
+    setIsPlaying(true)
+  }
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center">
+      {/* 🔊 Botón superior para música */}
+      {!isPlaying && (
+        <button 
+          onClick={handlePlayMusic}
+          className="fixed top-4 right-4 bg-doradoboda text-white px-3 py-2 text-xs rounded shadow-md hover:bg-marron-100 transition z-50"
+        >
+          🎶 Recorrer con música
+        </button>
+      )}
+      <audio ref={audioRef} preload="auto" loop>
+        <source src="/musica/audioboda.mp3" type="audio/mpeg" />
+      </audio>
+
       <img src="/img/encabezado.png" alt="Anillos" className="w-full h-1600 sm:w-[200px] mb-2" />
       <p className="text-black text-xl px-20 py-20 mb-auto mt-[-6em]">Un sí para toda la vida</p>
       <img src="/icons/ML.svg" alt="Anillos" className="w-[170px] sm:w-[200px] mb-2" />
@@ -209,10 +228,7 @@ export default function Home() {
       
       
 
-      <audio autoPlay loop>
-        <source src="/musica/audioboda.mp3" type="audio/mpeg" />
-        Tu navegador no soporta audio HTML5.
-      </audio>
+      
     </main>
   )
 }
