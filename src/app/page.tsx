@@ -11,33 +11,53 @@ import LibroAnimado from '../../components/LibroAnimado'
 import CostoPorPersona from '../../components/CostoPorPersona'
 import { useState, useRef } from 'react'
 
-
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
 const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 
 export default function Home() {
-   const [showVestimentaText, setShowVestimentaText] = useState(false)
+  const [showVestimentaText, setShowVestimentaText] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [showMusicModal, setShowMusicModal] = useState(true)
   const audioRef = useRef<HTMLAudioElement>(null)
 
-    const handlePlayMusic = () => {
-    audioRef.current?.play()
-    setIsPlaying(true)
+  const handleModalChoice = (playMusic: boolean) => {
+    if (playMusic && audioRef.current) {
+      audioRef.current.muted = false
+      audioRef.current.play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => console.error('Error reproduciendo música:', err))
+    }
+    setShowMusicModal(false)
   }
+
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center">
-      {/* 🔊 Botón superior para música */}
-      {!isPlaying && (
-        <button 
-          onClick={handlePlayMusic}
-          className="fixed top-4 right-4 bg-doradoboda text-white px-3 py-2 text-xs rounded shadow-md hover:bg-marron-100 transition z-50"
-        >
-          🎶 Recorrer con música
-        </button>
+      {showMusicModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm text-center">
+            <h2 className="text-lg font-semibold text-black mb-4">¿Querés recorrer con música?</h2>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => handleModalChoice(true)}
+                className="px-4 py-2 bg-doradoboda text-white rounded hover:bg-marron-100 transition"
+              >
+                Sí, con música 🎶
+              </button>
+              <button
+                onClick={() => handleModalChoice(false)}
+                className="px-4 py-2 border border-gray-400 text-black rounded hover:bg-gray-100 transition"
+              >
+                No, gracias
+              </button>
+            </div>
+          </div>
+        </div>
       )}
+
       <audio ref={audioRef} preload="auto" loop>
         <source src="/musica/audioboda.mp3" type="audio/mpeg" />
       </audio>
+
 
       <img src="/img/encabezado.png" alt="Anillos" className="w-full h-1600 sm:w-[200px] mb-2" />
       <p className="text-black text-xl px-20 py-20 mb-auto mt-[-6em]">Un sí para toda la vida</p>
