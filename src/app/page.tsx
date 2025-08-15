@@ -54,7 +54,7 @@ export default function Home() {
         </div>
       )}
 
-      <audio ref={audioRef} preload="auto" loop>
+      <audio ref={audioRef} preload="auto" loop playsInline muted>
         <source src="/musica/audioboda.mp3" type="audio/mpeg" />
       </audio>
 
@@ -229,7 +229,7 @@ export default function Home() {
         <Countdown />   
       </section>
       
-      <img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-5 w-[420px] sm:w-[200px] mb-4" />
+      <img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-5 w-[300px] sm:w-[200px] mb-4" />
 
 
       <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
