@@ -229,7 +229,7 @@ export default function Home() {
         <Countdown />   
       </section>
       
-      <img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-[6rem] w-full sm:w-[200px] mb-4" />
+      <img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-5 w-[420px] sm:w-[200px] mb-4" />
 
 
       <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
