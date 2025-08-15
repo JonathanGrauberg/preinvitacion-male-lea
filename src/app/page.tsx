@@ -18,27 +18,42 @@ export default function Home() {
   const [showVestimentaText, setShowVestimentaText] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [showMusicModal, setShowMusicModal] = useState(true)
+  const [showPlayFallback, setShowPlayFallback] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
 
-  const handleModalChoice = (playMusic: boolean) => {
-    if (playMusic && audioRef.current) {
-      audioRef.current.muted = false
-      audioRef.current.play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => console.error('Error reproduciendo música:', err))
+  const handlePlayMusic = async () => {
+    const el = audioRef.current
+    if (!el) return
+    try {
+      // Asegura estado "limpio" para iOS/Android
+      el.muted = false
+      el.volume = 1
+      // Si el usuario apretó varias veces
+      if (el.paused) el.currentTime = 0
+      await el.play()
+      setIsPlaying(true)
+    } catch (err) {
+      console.error('No se pudo reproducir:', err)
+      // Si el navegador aún bloquea, mostramos botón fallback
+      setShowPlayFallback(true)
     }
+  }
+
+  const handleModalChoice = async (playMusic: boolean) => {
+    if (playMusic) await handlePlayMusic()
     setShowMusicModal(false)
   }
 
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center">
       {showMusicModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-lg p-6 w-[90%] max-w-sm text-center">
             <h2 className="text-lg font-semibold text-black mb-4">¿Querés recorrer con música?</h2>
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => handleModalChoice(true)}
+                onTouchStart={() => handleModalChoice(true)} // iOS "viejo"
                 className="px-4 py-2 bg-doradoboda text-white rounded hover:bg-marron-100 transition"
               >
                 Sí, con música 🎶
@@ -54,9 +69,22 @@ export default function Home() {
         </div>
       )}
 
-      <audio ref={audioRef} preload="auto" loop playsInline muted>
+      {/* Solo un <audio>. Sin 'muted'. */}
+      <audio ref={audioRef} preload="auto" loop playsInline>
         <source src="/musica/audioboda.mp3" type="audio/mpeg" />
       </audio>
+
+      {/* Fallback visible si el navegador bloqueó el play() */}
+      {showPlayFallback && !isPlaying && (
+        <button
+          onClick={handlePlayMusic}
+          onTouchStart={handlePlayMusic}
+          className="fixed bottom-4 right-4 z-40 px-4 py-2 rounded bg-doradoboda text-white shadow"
+          aria-label="Reproducir música"
+        >
+          Reproducir música 🎵
+        </button>
+      )}
 
 
       <img src="/img/encabezado.png" alt="Anillos" className="w-full h-1600 sm:w-[200px] mb-2" />
@@ -234,10 +262,7 @@ export default function Home() {
 
       <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
       
-      <audio ref={audioRef} preload="auto" loop playsInline muted>
-        <source src="/musica/audioboda.mp3" type="audio/mpeg" />
-      </audio>
-            
+      
     </main>
   )
 }
