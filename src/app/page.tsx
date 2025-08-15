@@ -234,6 +234,9 @@ export default function Home() {
 
       <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
       
+      <audio ref={audioRef} preload="auto" loop playsInline muted>
+        <source src="/musica/audioboda.mp3" type="audio/mpeg" />
+      </audio>
             
     </main>
   )
