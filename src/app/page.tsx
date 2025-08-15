@@ -9,7 +9,7 @@ import Countdown from '../../components/Countdown'
 import MoreButton from '../../components/MoreButton'
 import LibroAnimado from '../../components/LibroAnimado'
 import CostoPorPersona from '../../components/CostoPorPersona'
-import { useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
 const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
@@ -19,55 +19,92 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [showMusicModal, setShowMusicModal] = useState(true)
   const [showPlayFallback, setShowPlayFallback] = useState(false)
+
   const audioRef = useRef<HTMLAudioElement>(null)
+  const consentedRef = useRef(false)
+  const handledTapRef = useRef(false)
 
-  // Dispara la música sin "await" y cierra el modal enseguida
-  const handleConsent = (wantsMusic: boolean) => {
-    if (wantsMusic) {
-      const el = audioRef.current
-      if (el) {
-        try {
-          el.muted = false
-          el.volume = 1
-          if (el.paused) el.currentTime = 0
-          const p = el.play()
-          if (p && typeof p.then === 'function') {
-            p.then(() => setIsPlaying(true)).catch(() => setShowPlayFallback(true))
-          } else {
-            setIsPlaying(true)
-          }
-        } catch {
-          setShowPlayFallback(true)
-        }
-      } else {
-        setShowPlayFallback(true)
-      }
-    }
-    // Cerrar modal siempre, sin esperar a play()
-    setShowMusicModal(false)
-  }
-
-  // Fallback manual si el navegador bloqueó el play()
-  const handlePlayFallback = () => {
+  /** Intenta reproducir de forma segura en móviles */
+  const tryPlay = () => {
     const el = audioRef.current
-    if (!el) return
+    if (!el) return false
     try {
+      // iOS a veces necesita "resetear" antes
       el.muted = false
       el.volume = 1
       if (el.paused) el.currentTime = 0
+      el.load()
       const p = el.play()
       if (p && typeof p.then === 'function') {
         p.then(() => {
           setIsPlaying(true)
           setShowPlayFallback(false)
-        }).catch(() => setShowPlayFallback(true))
+        }).catch(() => {
+          setShowPlayFallback(true)
+        })
       } else {
         setIsPlaying(true)
         setShowPlayFallback(false)
       }
+      return true
     } catch {
       setShowPlayFallback(true)
+      return false
     }
+  }
+
+  /** Handler del consentimiento: no espera play() y cierra modal */
+  const handleConsent = () => {
+    if (handledTapRef.current) return
+    handledTapRef.current = true
+    consentedRef.current = true
+
+    // Disparo inmediato (sin await)
+    tryPlay()
+
+    // Cierro modal SIEMPRE
+    setShowMusicModal(false)
+
+    // Libero el debounce un pelín después para no duplicar
+    setTimeout(() => {
+      handledTapRef.current = false
+    }, 200)
+  }
+
+  /** Reintento automático en el próximo gesto global tras consentimiento */
+  useEffect(() => {
+    if (!consentedRef.current) return
+
+    const retry = () => {
+      if (!isPlaying) tryPlay()
+    }
+
+    // Distintos tipos de gesto que cuentan como "user activation"
+    document.addEventListener('pointerup', retry, { passive: true })
+    document.addEventListener('touchend', retry, { passive: true })
+    document.addEventListener('click', retry, { passive: true })
+    document.addEventListener('keydown', retry, { passive: true })
+    document.addEventListener('scroll', retry, { passive: true })
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && consentedRef.current && !isPlaying) {
+        tryPlay()
+      }
+    })
+
+    return () => {
+      document.removeEventListener('pointerup', retry)
+      document.removeEventListener('touchend', retry)
+      document.removeEventListener('click', retry)
+      document.removeEventListener('keydown', retry)
+      document.removeEventListener('scroll', retry)
+      // no removemos visibilitychange porque es inline
+    }
+  }, [isPlaying])
+
+  /** Botón fallback visible si el navegador bloqueó el play */
+  const handlePlayFallback = () => {
+    consentedRef.current = true
+    tryPlay()
   }
 
   return (
@@ -78,31 +115,45 @@ export default function Home() {
             <h2 className="text-lg font-semibold text-black mb-4">¿Querés recorrer con música?</h2>
             <div className="flex justify-center gap-4">
               <button
-                onPointerUp={() => handleConsent(true)}
+                onPointerUp={handleConsent}
+                onClick={handleConsent}
+                onTouchEnd={handleConsent}
                 className="px-4 py-2 bg-doradoboda text-white rounded hover:bg-marron-100 transition"
               >
                 Sí, con música 🎶
               </button>
               <button
-                onPointerUp={() => handleConsent(false)}
+                onPointerUp={() => setShowMusicModal(false)}
+                onClick={() => setShowMusicModal(false)}
+                onTouchEnd={() => setShowMusicModal(false)}
                 className="px-4 py-2 border border-gray-400 text-black rounded hover:bg-gray-100 transition"
               >
                 No, gracias
               </button>
             </div>
+            {/* Tip: si seguís con problemas en un equipo puntual,
+                descomentá la línea "controls" del <audio> de abajo para testear. */}
           </div>
         </div>
       )}
 
-      {/* Un solo <audio> y sin 'muted' */}
-      <audio ref={audioRef} preload="auto" loop playsInline>
+      {/* Un solo <audio>; playsInline es clave en iOS */}
+      <audio
+        ref={audioRef}
+        preload="auto"
+        loop
+        playsInline
+        // controls // ⬅ descomentá para test rápido en el celu
+      >
         <source src="/musica/audioboda.mp3" type="audio/mpeg" />
       </audio>
 
-      {/* Fallback si el navegador bloquea la reproducción */}
+      {/* Fallback (aparece si el primer intento fue bloqueado) */}
       {showPlayFallback && !isPlaying && (
         <button
           onPointerUp={handlePlayFallback}
+          onClick={handlePlayFallback}
+          onTouchEnd={handlePlayFallback}
           className="fixed bottom-4 right-4 z-40 px-4 py-2 rounded bg-doradoboda text-white shadow"
           aria-label="Reproducir música"
         >
@@ -110,6 +161,7 @@ export default function Home() {
         </button>
       )}
 
+      {/* --- TU CONTENIDO TAL CUAL --- */}
       <img src="/img/encabezado.png" alt="Anillos" className="w-full h-1600 sm:w-[200px] mb-2" />
       <p className="text-black text-xl px-20 py-20 mb-auto mt-[-6em]">Un sí para toda la vida</p>
       <img src="/icons/ML.svg" alt="Anillos" className="w-[170px] sm:w-[200px] mb-2" />
@@ -190,18 +242,14 @@ export default function Home() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 mt-4 mb-12 sm:gap-10">
-          {/* Música */}
           <div
-            onClick={() => {
-              window.open('https://forms.gle/pMTxebtFZ1qGcBBQ8', '_blank')
-            }}
+            onClick={() => { window.open('https://forms.gle/pMTxebtFZ1qGcBBQ8', '_blank') }}
             className="bg-cards-color mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
           >
             <p className="text-xs sm:text-base font-semibold text-white mb-2">MÚSICA</p>
             <img src="/icons/music.svg" alt="Música" className="w-12 h-12 mr-3 sm:w-17 sm:h-17" />
           </div>
 
-          {/* Vestimenta */}
           <div className="flex items-center">
             <div
               onClick={() => setShowVestimentaText((prev) => !prev)}
@@ -260,7 +308,6 @@ export default function Home() {
       </section>
 
       <img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-5 w-[300px] sm:w-[200px] mb-4" />
-
       <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
     </main>
   )
