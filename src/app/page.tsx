@@ -8,6 +8,7 @@ import InfoButton from '../../components/InfoButton'
 import Countdown from '../../components/Countdown'
 import MoreButton from '../../components/MoreButton'
 import LibroAnimado from '../../components/LibroAnimado'
+import CostoPorPersona from '../../components/CostoPorPersona'
 import { useState, useRef } from 'react'
 
 
@@ -167,18 +168,7 @@ export default function Home() {
             </div>
           )}
         </div>
-
-    {/* Más Info */}
-    <div
-      onClick={() => {
-      const target = document.getElementById('requisitos');
-      target?.scrollIntoView({ behavior: 'smooth' });
-    }}
-      className="bg-cards-color mt-10 rounded-lg px-4 py-6 w-[90px] h-[115px] shadow-md flex flex-col items-center cursor-pointer transition sm:w-[117px] sm:h-[138px] hover:scale-105"
-    >
-      <p className="text-xs sm:text-base font-semibold text-white mb-2 whitespace-nowrap">MÁS INFO</p>
-      <img src="/icons/info.svg" alt="Más Info" className="w-12 h-12 sm:w-17 sm:h-17" />
-    </div> 
+    
 </div>  
 </section>
 
@@ -207,6 +197,10 @@ export default function Home() {
         <ConfirmButton />   
       </section>
 
+      <section className="text-center text-gray-300 mt-0 px-4 items-center mb-12">
+        <CostoPorPersona /> 
+      </section>
+
       <section className="text-center text-gray-300 mt-0 px-4 items-center mb-0">
         <SuggestSongButton />   
       </section>
@@ -214,21 +208,13 @@ export default function Home() {
       <section className="text-center text-gray-300 mt-0 px-4 items-center mb-12">
         <Countdown />   
       </section>
-
-      <div id="tarjetacosto" className="p-6">
-        <img src="/img/tarjetacosto.png" alt="tarjetacosto" className="shadow-xl mt-20 h-auto w-[600px] sm:w-[400px] mb-0" />
-      </div>
-
-      <div id="requisitos" className="p-6">
-        <img src="/img/requisitos.png" alt="requisitos" className="shadow-xl mt-20 h-auto max-w-auto sm:w-[400px] mb-2" />
-      </div>
       
+      <img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-[6rem] w-full sm:w-[200px] mb-4" />
+
 
       <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
       
-      
-
-      
+            
     </main>
   )
 }

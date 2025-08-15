@@ -22,7 +22,7 @@ export default function MoreButton() {
     <div className="flex flex-col items-center">
       <button
         onClick={() => setShowOptions(!showOptions)}
-          className="w-[170px] h-[30px] text-[0.8rem] border border-doradoboda text-grayblack rounded flex items-center justify-center hover:bg-doradoboda hover:text-white transition"
+          className="w-[170px] h-[30px] text-[0.8rem] border border-doradoboda text-grayblack rounded flex items-center justify-center hover: hover:text-white transition"
       >
         VER MÁS
       </button>

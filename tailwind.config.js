@@ -14,6 +14,7 @@ module.exports = {
         'blackligth': '#1A1A1A',
         'grayligth': '#CCCCCC',
         'grayblack': '#999999',
+        'nuevoverde': '#2090e0',
       },
     },
   },
