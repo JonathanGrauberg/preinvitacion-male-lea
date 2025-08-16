@@ -1,6 +1,7 @@
 'use client'
 import { Playfair_Display } from 'next/font/google'
 import { Great_Vibes } from 'next/font/google'
+import { useRef, useState } from 'react'
 import CalendarButton from '../../components/CalendarButton'
 import ConfirmButton from '../../components/ConfirmButton'
 import SuggestSongButton from '../../components/SuggestSongButton'
@@ -9,7 +10,6 @@ import Countdown from '../../components/Countdown'
 import MoreButton from '../../components/MoreButton'
 import LibroAnimado from '../../components/LibroAnimado'
 import CostoPorPersona from '../../components/CostoPorPersona'
-import { useEffect, useRef, useState } from 'react'
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
 const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
@@ -18,93 +18,32 @@ export default function Home() {
   const [showVestimentaText, setShowVestimentaText] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [showMusicModal, setShowMusicModal] = useState(true)
-  const [showPlayFallback, setShowPlayFallback] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement>(null)
-  const consentedRef = useRef(false)
-  const handledTapRef = useRef(false)
 
-  /** Intenta reproducir de forma segura en móviles */
-  const tryPlay = () => {
+  const handlePlay = async () => {
     const el = audioRef.current
-    if (!el) return false
+    if (!el) return
+
     try {
-      // iOS a veces necesita "resetear" antes
+      // Mute/unmute y play en un solo try/catch.
+      // iOS a veces necesita una interacción para que esto funcione.
       el.muted = false
       el.volume = 1
-      if (el.paused) el.currentTime = 0
-      el.load()
-      const p = el.play()
-      if (p && typeof p.then === 'function') {
-        p.then(() => {
-          setIsPlaying(true)
-          setShowPlayFallback(false)
-        }).catch(() => {
-          setShowPlayFallback(true)
-        })
-      } else {
-        setIsPlaying(true)
-        setShowPlayFallback(false)
-      }
-      return true
-    } catch {
-      setShowPlayFallback(true)
-      return false
+      await el.play()
+      setIsPlaying(true)
+      setShowMusicModal(false)
+    } catch (err) {
+      console.error("Error al intentar reproducir el audio:", err)
+      // Si el play falla, el modal se mantiene abierto
+      // para darle otra oportunidad al usuario.
     }
   }
 
-  /** Handler del consentimiento: no espera play() y cierra modal */
-  const handleConsent = () => {
-    if (handledTapRef.current) return
-    handledTapRef.current = true
-    consentedRef.current = true
-
-    // Disparo inmediato (sin await)
-    tryPlay()
-
-    // Cierro modal SIEMPRE
-    setShowMusicModal(false)
-
-    // Libero el debounce un pelín después para no duplicar
-    setTimeout(() => {
-      handledTapRef.current = false
-    }, 200)
-  }
-
-  /** Reintento automático en el próximo gesto global tras consentimiento */
-  useEffect(() => {
-    if (!consentedRef.current) return
-
-    const retry = () => {
-      if (!isPlaying) tryPlay()
-    }
-
-    // Distintos tipos de gesto que cuentan como "user activation"
-    document.addEventListener('pointerup', retry, { passive: true })
-    document.addEventListener('touchend', retry, { passive: true })
-    document.addEventListener('click', retry, { passive: true })
-    document.addEventListener('keydown', retry, { passive: true })
-    document.addEventListener('scroll', retry, { passive: true })
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && consentedRef.current && !isPlaying) {
-        tryPlay()
-      }
-    })
-
-    return () => {
-      document.removeEventListener('pointerup', retry)
-      document.removeEventListener('touchend', retry)
-      document.removeEventListener('click', retry)
-      document.removeEventListener('keydown', retry)
-      document.removeEventListener('scroll', retry)
-      // no removemos visibilitychange porque es inline
-    }
-  }, [isPlaying])
-
-  /** Botón fallback visible si el navegador bloqueó el play */
   const handlePlayFallback = () => {
-    consentedRef.current = true
-    tryPlay()
+    handlePlay()
+    // El fallback oculta el modal si el play es exitoso
+    // y lo muestra de nuevo si falla (se maneja en el catch).
   }
 
   return (
@@ -115,24 +54,19 @@ export default function Home() {
             <h2 className="text-lg font-semibold text-black mb-4">¿Querés recorrer con música?</h2>
             <div className="flex justify-center gap-4">
               <button
-                onPointerUp={handleConsent}
-                onClick={handleConsent}
-                onTouchEnd={handleConsent}
+                // Solo un event handler para mayor fiabilidad
+                onClick={handlePlay}
                 className="px-4 py-2 bg-doradoboda text-white rounded hover:bg-marron-100 transition"
               >
                 Sí, con música 🎶
               </button>
               <button
-                onPointerUp={() => setShowMusicModal(false)}
                 onClick={() => setShowMusicModal(false)}
-                onTouchEnd={() => setShowMusicModal(false)}
                 className="px-4 py-2 border border-gray-400 text-black rounded hover:bg-gray-100 transition"
               >
                 No, gracias
               </button>
             </div>
-            {/* Tip: si seguís con problemas en un equipo puntual,
-                descomentá la línea "controls" del <audio> de abajo para testear. */}
           </div>
         </div>
       )}
@@ -143,24 +77,20 @@ export default function Home() {
         preload="auto"
         loop
         playsInline
-        // controls // ⬅ descomentá para test rápido en el celu
       >
         <source src="/musica/audioboda.mp3" type="audio/mpeg" />
       </audio>
 
-      {/* Fallback (aparece si el primer intento fue bloqueado) */}
-      {showPlayFallback && !isPlaying && (
+      {/* Botón flotante si el play inicial falla. Este fallback es crucial. */}
+      {!showMusicModal && !isPlaying && (
         <button
-          onPointerUp={handlePlayFallback}
           onClick={handlePlayFallback}
-          onTouchEnd={handlePlayFallback}
           className="fixed bottom-4 right-4 z-40 px-4 py-2 rounded bg-doradoboda text-white shadow"
           aria-label="Reproducir música"
         >
           Reproducir música 🎵
         </button>
       )}
-
       {/* --- TU CONTENIDO TAL CUAL --- */}
       <img src="/img/encabezado.png" alt="Anillos" className="w-full h-1600 sm:w-[200px] mb-2" />
       <p className="text-black text-xl px-20 py-20 mb-auto mt-[-6em]">Un sí para toda la vida</p>
