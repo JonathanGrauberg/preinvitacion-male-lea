@@ -16,14 +16,54 @@ const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 export default function Home() {
   const [showVestimentaText, setShowVestimentaText] = useState(false)
 
-  // === AUDIO STATE ===
+  // === AUDIO (new Audio) ===
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [muted, setMuted] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [canPlay, setCanPlay] = useState(false)      // el archivo ya tiene buffer para iniciar
   const [showTapHint, setShowTapHint] = useState(true)
 
-  // helper para actualizar flags desde eventos del <audio>
+  // Crea el objeto Audio una sola vez (como cuando te funcionaba en iOS)
+  useEffect(() => {
+    const el = new Audio('/musica/audioboda.mp3') // <-- asegurate que exista en public/audio/tema.mp3
+    el.loop = true
+    el.preload = 'auto'
+    el.muted = true
+    ;(el as any).playsInline = true
+
+    audioRef.current = el
+
+    // Autoplay en silencio
+    el.play()
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false))
+
+    // Reintento al volver a la pestaña
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible' && audioRef.current && !audioRef.current.muted) {
+        audioRef.current.play().catch(() => {})
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
+    // Si el archivo ya está listo, reintenta el autoplay en mute (por si falló al comienzo)
+    const onCanPlayThrough = () => {
+      if (!audioRef.current) return
+      if (audioRef.current.paused) {
+        audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {})
+      }
+    }
+    el.addEventListener('canplaythrough', onCanPlayThrough, { once: true })
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility)
+      el.removeEventListener('canplaythrough', onCanPlayThrough)
+      el.pause()
+      el.src = ''
+      audioRef.current = null
+    }
+  }, [])
+
+  // Sincroniza flags con el elemento
   const syncFromEl = useCallback(() => {
     const el = audioRef.current
     if (!el) return
@@ -31,37 +71,46 @@ export default function Home() {
     setIsPlaying(!el.paused)
   }, [])
 
-  // Intento de autoplay (muted) cuando el archivo YA puede reproducirse
+  // Desmutear/Play en el primer gesto (agregamos touchstart/click para Android)
   useEffect(() => {
-    const el = audioRef.current
-    if (!el || !canPlay) return
-    el.muted = true
-    el.loop = true
-    el.preload = 'auto'
-    ;(el as any).playsInline = true
-
-    el.play()
-      .then(() => {
+    const enableSound = async () => {
+      const el = audioRef.current
+      if (!el) return
+      try {
+        el.muted = false
+        if (el.paused) await el.play()
         syncFromEl()
-        // dejamos el hint visible hasta que el user haga el primer gesto (para activar sonido)
-        setShowTapHint(true)
-      })
-      .catch(() => {
-        // Si ni siquiera puede reproducir en muted, dejamos botones/hint
+        setShowTapHint(false)
+      } catch {
+        // si falla, dejamos botones/hint
         syncFromEl()
-      })
-
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible' && !el.muted) {
-        el.play().catch(() => {})
       }
+      // removemos todos los listeners del “primer gesto”
+      window.removeEventListener('pointerdown', enableSound as any, true as any)
+      window.removeEventListener('click', enableSound as any, true as any)
+      window.removeEventListener('touchstart', enableSound as any, true as any)
+      window.removeEventListener('keydown', enableSound as any, true as any)
+      window.removeEventListener('scroll', enableSound as any, true as any)
     }
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => document.removeEventListener('visibilitychange', onVisibility)
-  }, [canPlay, syncFromEl])
 
-  // Habilitar sonido en el primer gesto + reintento de play
-  const enableSound = useCallback(async () => {
+    const opts: AddEventListenerOptions = { once: true, capture: true }
+    window.addEventListener('pointerdown', enableSound as any, opts)
+    window.addEventListener('click', enableSound as any, opts)
+    window.addEventListener('touchstart', enableSound as any, opts)
+    window.addEventListener('keydown', enableSound as any, opts)
+    window.addEventListener('scroll', enableSound as any, opts)
+
+    return () => {
+      window.removeEventListener('pointerdown', enableSound as any, true as any)
+      window.removeEventListener('click', enableSound as any, true as any)
+      window.removeEventListener('touchstart', enableSound as any, true as any)
+      window.removeEventListener('keydown', enableSound as any, true as any)
+      window.removeEventListener('scroll', enableSound as any, true as any)
+    }
+  }, [syncFromEl])
+
+  // Overlay de pantalla completa (por si el evento del window no engancha)
+  const handleOverlayClick = async () => {
     const el = audioRef.current
     if (!el) return
     try {
@@ -70,33 +119,14 @@ export default function Home() {
       syncFromEl()
       setShowTapHint(false)
     } catch {
-      // si falla, al menos ocultamos hint si ya hay controles
       syncFromEl()
     }
-  }, [syncFromEl])
-
-  useEffect(() => {
-    // escuchamos muchos tipos de gesto (Android/iOS)
-    const opts: AddEventListenerOptions = { once: true, capture: true }
-    window.addEventListener('pointerdown', enableSound, opts)
-    window.addEventListener('click', enableSound, opts)
-    window.addEventListener('touchstart', enableSound as any, opts)
-    window.addEventListener('keydown', enableSound, opts)
-    window.addEventListener('scroll', enableSound, opts)
-    return () => {
-      window.removeEventListener('pointerdown', enableSound, true as any)
-      window.removeEventListener('click', enableSound, true as any)
-      window.removeEventListener('touchstart', enableSound as any, true as any)
-      window.removeEventListener('keydown', enableSound, true as any)
-      window.removeEventListener('scroll', enableSound, true as any)
-    }
-  }, [enableSound])
+  }
 
   // Controles
   const togglePlay = async () => {
     const el = audioRef.current
     if (!el) return
-    if (!canPlay) return
     if (el.paused) {
       try {
         el.muted = false
@@ -122,32 +152,15 @@ export default function Home() {
     if (!el.muted) setShowTapHint(false)
   }
 
-  // Mostramos hint mientras esté muted o no esté reproduciendo
+  // Mostrar hint mientras esté silenciado o no esté reproduciendo
   const shouldShowHint = showTapHint && (muted || !isPlaying)
 
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center relative">
-      {/* AUDIO en DOM */}
-      <audio
-        ref={audioRef}
-        src="/musica/audioboda.mp3"       // ⚠️ archivo en public/musica/audioboda.mp3
-        preload="auto"
-        loop
-        className="hidden"
-        onCanPlay={() => setCanPlay(true)}
-        onPlay={syncFromEl}
-        onPause={syncFromEl}
-        onVolumeChange={syncFromEl}
-        onError={() => {
-          console.error('No se pudo cargar /musica/audioboda.mp3')
-          setCanPlay(false)
-        }}
-      />
-
-      {/* Overlay capturador del primer toque (por si los eventos de window no llegan) */}
+      {/* Overlay clickeable para garantizar el primer gesto */}
       {shouldShowHint && (
         <button
-          onClick={enableSound}
+          onClick={handleOverlayClick}
           className="fixed inset-0 z-40 bg-transparent"
           aria-label="Activar sonido"
         />
