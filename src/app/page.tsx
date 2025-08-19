@@ -13,8 +13,6 @@ import CostoPorPersona from '../../components/CostoPorPersona'
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
 const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 
-
-
 export default function Home() {
   const [showVestimentaText, setShowVestimentaText] = useState(false)
 
@@ -24,103 +22,108 @@ export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [showTapHint, setShowTapHint] = useState(true)
 
+  // Setup del <audio> en DOM y autoplay en muted
   useEffect(() => {
-    // Crear el elemento de audio una sola vez
-    const el = new Audio('/musica/audioboda.MP3')
+    const el = audioRef.current
+    if (!el) return
+
+    el.muted = true
     el.loop = true
     el.preload = 'auto'
-    el.muted = true          // iOS permite autoplay solo si está muted
-    // playsInline ayuda en iOS (para <video>), pero dejamos el flag por compat:
     ;(el as any).playsInline = true
 
-    audioRef.current = el
-
-    // Intento de autoplay (muted)
     el.play()
-      .then(() => {
-        setIsPlaying(true)
-      })
-      .catch(() => {
-        // Si ni siquiera puede reproducir en muted (raro), mostramos botón
-        setIsPlaying(false)
-      })
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false))
 
-    // Al cambiar de pestaña y volver, reintentar
     const onVisibility = () => {
-      if (document.visibilityState === 'visible' && audioRef.current && isPlaying) {
-        audioRef.current.play().catch(() => {})
+      if (document.visibilityState === 'visible' && !el.muted) {
+        el.play().catch(() => {})
       }
     }
     document.addEventListener('visibilitychange', onVisibility)
+    return () => document.removeEventListener('visibilitychange', onVisibility)
+  }, [])
 
-    return () => {
-      document.removeEventListener('visibilitychange', onVisibility)
-      el.pause()
-      el.src = ''
-      audioRef.current = null
-    }
-  }, []) // solo al montar
-
-  // Habilita el sonido al primer gesto
+  // Desmutear al primer gesto (Android friendly)
   useEffect(() => {
-    const enableSound = () => {
-      if (!audioRef.current) return
-      if (!isPlaying) {
-        audioRef.current.play().catch(() => {})
-        setIsPlaying(true)
+    const enableSound = async () => {
+      const el = audioRef.current
+      if (!el) return
+      try {
+        el.muted = false
+        setMuted(false)
+        if (el.paused) await el.play()
+        setIsPlaying(!el.paused)
+        setShowTapHint(false)
+      } catch {
+        setIsPlaying(false)
       }
-      // Fade-in suave del volumen
-      audioRef.current.muted = false
-      setMuted(false)
-      setShowTapHint(false)
 
-      // Quitamos listeners después del primer gesto
       window.removeEventListener('pointerdown', enableSound)
+      window.removeEventListener('click', enableSound)
+      window.removeEventListener('touchstart', enableSound as any)
       window.removeEventListener('keydown', enableSound)
-      window.removeEventListener('touchend', enableSound)
-      window.removeEventListener('scroll', enableSound, { capture: true } as any)
+      window.removeEventListener('scroll', enableSound as any, { capture: true } as any)
     }
 
-    // Cualquier gesto cuenta
     window.addEventListener('pointerdown', enableSound, { once: true })
+    window.addEventListener('click', enableSound, { once: true })
+    window.addEventListener('touchstart', enableSound as any, { once: true })
     window.addEventListener('keydown', enableSound, { once: true })
-    window.addEventListener('touchend', enableSound, { once: true })
-    // En algunos navegadores, el primer scroll también vale como gesto
-    window.addEventListener('scroll', enableSound, { capture: true, once: true })
+    window.addEventListener('scroll', enableSound as any, { capture: true, once: true } as any)
 
     return () => {
       window.removeEventListener('pointerdown', enableSound)
+      window.removeEventListener('click', enableSound)
+      window.removeEventListener('touchstart', enableSound as any)
       window.removeEventListener('keydown', enableSound)
-      window.removeEventListener('touchend', enableSound)
-      window.removeEventListener('scroll', enableSound, { capture: true } as any)
+      window.removeEventListener('scroll', enableSound as any, { capture: true } as any)
     }
-  }, [isPlaying])
+  }, [])
 
   const togglePlay = async () => {
-    if (!audioRef.current) return
+    const el = audioRef.current
+    if (!el) return
     if (isPlaying) {
-      audioRef.current.pause()
+      el.pause()
       setIsPlaying(false)
     } else {
       try {
-        await audioRef.current.play()
+        // Por si el user pausó y vuelve a darle play, desmuteamos:
+        el.muted = false
+        setMuted(false)
+        await el.play()
+        setIsPlaying(true)
+        setShowTapHint(false)
+      } catch {}
+    }
+  }
+
+  const toggleMute = async () => {
+    const el = audioRef.current
+    if (!el) return
+    el.muted = !el.muted
+    setMuted(el.muted)
+    if (!el.muted && el.paused) {
+      try {
+        await el.play()
         setIsPlaying(true)
       } catch {}
     }
   }
 
-  const toggleMute = () => {
-    if (!audioRef.current) return
-    audioRef.current.muted = !audioRef.current.muted
-    setMuted(audioRef.current.muted)
-    if (!audioRef.current.muted && !isPlaying) {
-      audioRef.current.play().catch(() => {})
-      setIsPlaying(true)
-    }
-  }
-
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center relative">
+      {/* Elemento de audio en DOM */}
+      <audio
+        ref={audioRef}
+        src="/musica/audioboda.mp3"  // ⚠️ asegurate que el archivo esté en public/musica/audioboda.mp3 (minúsculas)
+        preload="auto"
+        loop
+        className="hidden"
+      />
+
       {/* Hint para activar sonido la 1ª vez */}
       {showTapHint && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-black/70 text-white px-4 py-2 rounded-full text-sm shadow">
@@ -147,7 +150,7 @@ export default function Home() {
       </div>
 
       {/* --------- TU CONTENIDO ACTUAL --------- */}
-      <img src="/img/encabezado.png" alt="Anillos" className="w-full h-1600 sm:w-[200px] mb-2" />
+      <img src="/img/encabezado.png" alt="encabezado" className="w-full h-1600 sm:w-[200px] mb-2" />
       <p className="text-black text-xl px-20 py-20 mb-auto mt-[-6em]">Un sí para toda la vida</p>
       <img src="/icons/ML.svg" alt="Anillos" className="w-[170px] sm:w-[200px] mb-2" />
       <p className="text-black px-20 py-20 mb-10 w-auto">
