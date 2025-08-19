@@ -13,36 +13,6 @@ import CostoPorPersona from '../../components/CostoPorPersona'
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
 const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 
-// app/page.tsx
-
-export const metadata = {
-  title: 'M+L | Invitación',
-  description: 'Nuestra invitación de boda',
-  openGraph: {
-    title: '¡Llegó la invitación! 💍',
-    description:
-      'Todo lo que necesitás: fecha, lugar, confirmación y más. Tocá para abrir ✨',
-    url: 'https://boda-male-lea.vercel.app/',
-    siteName: 'M+L Boda',
-    images: [
-      {
-        url: 'https://boda-male-lea.vercel.app/og/invitacion.jpg', // tu imagen 1200x630
-        width: 1200,
-        height: 630,
-        alt: 'Invitación M+L',
-      },
-    ],
-    locale: 'es_AR',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: '¡Llegó la invitación! 💍',
-    description:
-      'Todo lo que necesitás: fecha, lugar, confirmación y más. Tocá para abrir ✨',
-    images: ['https://boda-male-lea.vercel.app/og/invitacion.jpg'],
-  },
-}
 
 
 export default function Home() {
