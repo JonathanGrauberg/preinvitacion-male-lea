@@ -13,171 +13,120 @@ import CostoPorPersona from '../../components/CostoPorPersona'
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
 const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 
-const AUDIO_SRC = '/musica/audioboda.mp3' // <- debe existir en public/musica/audioboda.mp3
-
 export default function Home() {
   const [showVestimentaText, setShowVestimentaText] = useState(false)
 
   // === AUDIO ===
-  const domAudioRef = useRef<HTMLAudioElement | null>(null)
-  const objAudioRef = useRef<HTMLAudioElement | null>(null) // fallback new Audio
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const [muted, setMuted] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [showTapHint, setShowTapHint] = useState(true)
-  const [useDomAudio, setUseDomAudio] = useState(true)
 
-  const getAudio = () => (useDomAudio ? domAudioRef.current : objAudioRef.current)
-
-  // 1) Intento con <audio> DOM (autoplay muted)
   useEffect(() => {
-    const el = domAudioRef.current
-    if (!el) return
+    // Crear el elemento de audio una sola vez
+    const el = new Audio('/musica/audioboda.mp3')
+    el.loop = true
+    el.preload = 'auto'
+    el.muted = true          // iOS permite autoplay solo si está muted
+    // playsInline ayuda en iOS (para <video>), pero dejamos el flag por compat:
+    ;(el as any).playsInline = true
 
-    const onCanPlay = async () => {
-      try {
-        el.muted = true
-        el.loop = true
-        ;(el as any).playsInline = true
-        await el.play()
+    audioRef.current = el
+
+    // Intento de autoplay (muted)
+    el.play()
+      .then(() => {
         setIsPlaying(true)
-        setMuted(true)
-        // dejamos el hint para invitar a activar sonido
-      } catch {
-        // No pudo ni en mute. Seguimos mostrando hint; probaremos fallback si hay error real.
+      })
+      .catch(() => {
+        // Si ni siquiera puede reproducir en muted (raro), mostramos botón
         setIsPlaying(false)
-      }
-    }
+      })
 
-    const onError = () => {
-      console.error('⚠️ <audio> DOM no pudo usar la fuente. Probando fallback new Audio(). URL:', AUDIO_SRC)
-      setUseDomAudio(false) // activamos fallback
-    }
-
-    el.addEventListener('canplay', onCanPlay, { once: true })
-    el.addEventListener('error', onError, { once: true })
-
-    const onPlay = () => { setIsPlaying(true); setMuted(el.muted) }
-    const onPause = () => setIsPlaying(false)
-    const onVolume = () => setMuted(el.muted)
-
-    el.addEventListener('play', onPlay)
-    el.addEventListener('pause', onPause)
-    el.addEventListener('volumechange', onVolume)
-
+    // Al cambiar de pestaña y volver, reintentar
     const onVisibility = () => {
-      if (document.visibilityState === 'visible' && !el.muted) {
-        el.play().catch(() => {})
+      if (document.visibilityState === 'visible' && audioRef.current && isPlaying) {
+        audioRef.current.play().catch(() => {})
       }
     }
     document.addEventListener('visibilitychange', onVisibility)
 
     return () => {
-      el.removeEventListener('play', onPlay)
-      el.removeEventListener('pause', onPause)
-      el.removeEventListener('volumechange', onVolume)
       document.removeEventListener('visibilitychange', onVisibility)
+      el.pause()
+      el.src = ''
+      audioRef.current = null
     }
-  }, [])
+  }, []) // solo al montar
 
-  // 2) Fallback: new Audio() si el DOM falló
+  // Habilita el sonido al primer gesto
   useEffect(() => {
-    if (useDomAudio) return
-    if (objAudioRef.current) return
-    const a = new Audio(AUDIO_SRC)
-    a.loop = true
-    a.preload = 'auto'
-    a.muted = true
-    ;(a as any).playsInline = true
-    objAudioRef.current = a
-
-    a.play().then(() => {
-      setIsPlaying(true)
-      setMuted(true)
-    }).catch(() => {
-      setIsPlaying(false)
-    })
-
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible' && !a.muted) {
-        a.play().catch(() => {})
+    const enableSound = () => {
+      if (!audioRef.current) return
+      if (!isPlaying) {
+        audioRef.current.play().catch(() => {})
+        setIsPlaying(true)
       }
-    }
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => {
-      document.removeEventListener('visibilitychange', onVisibility)
-      a.pause()
-      a.src = ''
-      objAudioRef.current = null
-    }
-  }, [useDomAudio])
-
-  // Acción del primer toque
-  const enableSound = async () => {
-    const el = getAudio()
-    if (!el) return
-    try {
-      el.muted = false
-      if (el.paused) await el.play()
+      // Fade-in suave del volumen
+      audioRef.current.muted = false
       setMuted(false)
-      setIsPlaying(true)
       setShowTapHint(false)
-    } catch (e) {
-      console.error('No se pudo reproducir tras gesto:', e)
+
+      // Quitamos listeners después del primer gesto
+      window.removeEventListener('pointerdown', enableSound)
+      window.removeEventListener('keydown', enableSound)
+      window.removeEventListener('touchend', enableSound)
+      window.removeEventListener('scroll', enableSound, { capture: true } as any)
     }
-  }
+
+    // Cualquier gesto cuenta
+    window.addEventListener('pointerdown', enableSound, { once: true })
+    window.addEventListener('keydown', enableSound, { once: true })
+    window.addEventListener('touchend', enableSound, { once: true })
+    // En algunos navegadores, el primer scroll también vale como gesto
+    window.addEventListener('scroll', enableSound, { capture: true, once: true })
+
+    return () => {
+      window.removeEventListener('pointerdown', enableSound)
+      window.removeEventListener('keydown', enableSound)
+      window.removeEventListener('touchend', enableSound)
+      window.removeEventListener('scroll', enableSound, { capture: true } as any)
+    }
+  }, [isPlaying])
 
   const togglePlay = async () => {
-    const el = getAudio()
-    if (!el) return
-    if (el.paused) {
-      try {
-        el.muted = false
-        await el.play()
-        setMuted(false)
-        setIsPlaying(true)
-        setShowTapHint(false)
-      } catch {}
-    } else {
-      el.pause()
+    if (!audioRef.current) return
+    if (isPlaying) {
+      audioRef.current.pause()
       setIsPlaying(false)
+    } else {
+      try {
+        await audioRef.current.play()
+        setIsPlaying(true)
+      } catch {}
     }
   }
 
-  const toggleMute = async () => {
-    const el = getAudio()
-    if (!el) return
-    el.muted = !el.muted
-    setMuted(el.muted)
-    if (!el.muted && el.paused) {
-      try { await el.play(); setIsPlaying(true) } catch {}
+  const toggleMute = () => {
+    if (!audioRef.current) return
+    audioRef.current.muted = !audioRef.current.muted
+    setMuted(audioRef.current.muted)
+    if (!audioRef.current.muted && !isPlaying) {
+      audioRef.current.play().catch(() => {})
+      setIsPlaying(true)
     }
-    if (!el.muted) setShowTapHint(false)
   }
-
-  const shouldShowHint = showTapHint && (muted || !isPlaying)
 
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center relative">
-      {/* AUDIO DOM (primario) */}
-      <audio ref={domAudioRef} preload="auto" loop className="hidden">
-        <source src={AUDIO_SRC} type="audio/mpeg" />
-      </audio>
-
-      {/* Overlay + hint para primer toque */}
-      {shouldShowHint && (
-        <>
-          <button
-            onClick={enableSound}
-            className="fixed inset-0 z-40 bg-transparent"
-            aria-label="Activar sonido"
-          />
-          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-black/70 text-white px-4 py-2 rounded-full text-sm shadow">
-            🔊 Toca la pantalla para activar el sonido
-          </div>
-        </>
+      {/* Hint para activar sonido la 1ª vez */}
+      {showTapHint && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-black/70 text-white px-4 py-2 rounded-full text-sm shadow">
+          🔊 Toca la pantalla para activar el sonido
+        </div>
       )}
 
-      {/* Controles flotantes */}
+      {/* Botones flotantes de audio */}
       <div className="fixed bottom-6 right-6 z-50 flex gap-2">
         <button
           onClick={togglePlay}
