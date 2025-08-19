@@ -24,7 +24,7 @@ export default function Home() {
 
   useEffect(() => {
     // Crear el elemento de audio una sola vez
-    const el = new Audio('/musica/audioboda.mp3')
+    const el = new Audio('/musica/audioboda.MP3')
     el.loop = true
     el.preload = 'auto'
     el.muted = true          // iOS permite autoplay solo si está muted
