@@ -109,7 +109,7 @@ export default function Home() {
           <div className="bg-white text-black rounded-2xl p-6 max-w-sm w-full shadow-lg text-center">
             <h2 className="text-xl font-semibold mb-2">¡Bienvenid@ a nuestra invitación!</h2>
             <p className="text-sm text-gray-700 mb-4">
-              Activa el sonido para disfrutar la música mientras navegás.
+              Con mucho cariño, gracias a Silvia Tejeda por regalarnos su canción para ambientar este recorrido.
             </p>
             {/* Acá podés poner tu texto personalizado extra */}
             <button
