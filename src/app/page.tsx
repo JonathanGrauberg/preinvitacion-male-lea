@@ -16,34 +16,32 @@ const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
 export default function Home() {
   const [showVestimentaText, setShowVestimentaText] = useState(false)
 
-  // === AUDIO ===
+  // === AUDIO (NO cambiamos tu back) ===
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [muted, setMuted] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [showTapHint, setShowTapHint] = useState(true)
 
   useEffect(() => {
-    // Crear el elemento de audio una sola vez
+    // Crear el elemento de audio una sola vez (igual que tu versión)
     const el = new Audio('/musica/audioboda.MP3')
     el.loop = true
     el.preload = 'auto'
     el.muted = true          // iOS permite autoplay solo si está muted
-    // playsInline ayuda en iOS (para <video>), pero dejamos el flag por compat:
     ;(el as any).playsInline = true
 
     audioRef.current = el
 
-    // Intento de autoplay (muted)
+    // Autoplay en mute
     el.play()
       .then(() => {
         setIsPlaying(true)
       })
       .catch(() => {
-        // Si ni siquiera puede reproducir en muted (raro), mostramos botón
         setIsPlaying(false)
       })
 
-    // Al cambiar de pestaña y volver, reintentar
+    // Reintentar al volver de background SOLO si estaba reproduciendo
     const onVisibility = () => {
       if (document.visibilityState === 'visible' && audioRef.current && isPlaying) {
         audioRef.current.play().catch(() => {})
@@ -59,47 +57,43 @@ export default function Home() {
     }
   }, []) // solo al montar
 
-  // Habilita el sonido al primer gesto
+  // Evitar que se scrollee por debajo mientras el modal está visible
   useEffect(() => {
-    const enableSound = () => {
-      if (!audioRef.current) return
-      if (!isPlaying) {
-        audioRef.current.play().catch(() => {})
-        setIsPlaying(true)
-      }
-      // Fade-in suave del volumen
-      audioRef.current.muted = false
-      setMuted(false)
-      setShowTapHint(false)
-
-      // Quitamos listeners después del primer gesto
-      window.removeEventListener('pointerdown', enableSound)
-      window.removeEventListener('keydown', enableSound)
-      window.removeEventListener('touchend', enableSound)
-      window.removeEventListener('scroll', enableSound, { capture: true } as any)
-    }
-
-    // Cualquier gesto cuenta
-    window.addEventListener('pointerdown', enableSound, { once: true })
-    window.addEventListener('keydown', enableSound, { once: true })
-    window.addEventListener('touchend', enableSound, { once: true })
-    // En algunos navegadores, el primer scroll también vale como gesto
-    window.addEventListener('scroll', enableSound, { capture: true, once: true })
-
-    return () => {
-      window.removeEventListener('pointerdown', enableSound)
-      window.removeEventListener('keydown', enableSound)
-      window.removeEventListener('touchend', enableSound)
-      window.removeEventListener('scroll', enableSound, { capture: true } as any)
-    }
-  }, [isPlaying])
-
-  const togglePlay = async () => {
-    if (!audioRef.current) return
-    if (isPlaying) {
-      audioRef.current.pause()
-      setIsPlaying(false)
+    const prev = document.body.style.overflow
+    if (showTapHint) {
+      document.body.style.overflow = 'hidden'
     } else {
+      document.body.style.overflow = prev || ''
+    }
+    return () => {
+      document.body.style.overflow = prev || ''
+    }
+  }, [showTapHint])
+
+  // Botón "Comenzar": gesto válido → desmutea y reproduce, y recién ahí cierra el modal
+  const handleComenzar = async () => {
+    if (!audioRef.current) return
+    try {
+      audioRef.current.muted = false
+      if (audioRef.current.paused) {
+        await audioRef.current.play()
+      }
+      setMuted(false)
+      setIsPlaying(true)
+      setShowTapHint(false) // ocultamos el modal SOLO si el play fue OK
+    } catch (e) {
+      // Si falla, mantenemos el modal visible para que el usuario reintente
+      console.warn('No se pudo activar sonido tras gesto:', e)
+    }
+  }
+
+  // Único control visible: Silencio/Sonido
+  const toggleMute = async () => {
+    if (!audioRef.current) return
+    audioRef.current.muted = !audioRef.current.muted
+    setMuted(audioRef.current.muted)
+    // Si lo activan y estaba en pausa por algún motivo, intentamos reproducir
+    if (!audioRef.current.muted && audioRef.current.paused) {
       try {
         await audioRef.current.play()
         setIsPlaying(true)
@@ -107,37 +101,37 @@ export default function Home() {
     }
   }
 
-  const toggleMute = () => {
-    if (!audioRef.current) return
-    audioRef.current.muted = !audioRef.current.muted
-    setMuted(audioRef.current.muted)
-    if (!audioRef.current.muted && !isPlaying) {
-      audioRef.current.play().catch(() => {})
-      setIsPlaying(true)
-    }
-  }
-
   return (
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center relative">
-      {/* Hint para activar sonido la 1ª vez */}
+      {/* MODAL/OVERLAY INICIAL (no desaparece por scroll) */}
       {showTapHint && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 bg-black/70 text-white px-4 py-2 rounded-full text-sm shadow">
-          🔊 Toca la pantalla para activar el sonido
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6">
+          <div className="bg-white text-black rounded-2xl p-6 max-w-sm w-full shadow-lg text-center">
+            <h2 className="text-xl font-semibold mb-2">¡Bienvenid@ a nuestra invitación!</h2>
+            <p className="text-sm text-gray-700 mb-4">
+              Activa el sonido para disfrutar la música mientras navegás.
+            </p>
+            {/* Acá podés poner tu texto personalizado extra */}
+            <button
+              onPointerDown={handleComenzar}
+              onClick={handleComenzar}
+              className="inline-flex items-center justify-center rounded-full bg-doradoboda text-white px-5 py-2 text-sm font-medium shadow hover:brightness-95 active:scale-[0.98]"
+            >
+              Comenzar
+            </button>
+            <p className="text-[11px] text-gray-500 mt-3">
+              Podrás silenciarla cuando quieras.
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Botones flotantes de audio */}
-      <div className="fixed bottom-6 right-6 z-50 flex gap-2">
+      {/* Botón flotante ÚNICO: Silencio/Sonido */}
+      <div className="fixed bottom-6 right-6 z-40">
         <button
-          onClick={togglePlay}
-          className="rounded-full bg-black/70 text-white px-4 py-2 text-xs backdrop-blur shadow hover:bg-black"
-          aria-label={isPlaying ? 'Pausar música' : 'Reproducir música'}
-        >
-          {isPlaying ? '⏸️ Pausar' : '▶️ Reproducir'}
-        </button>
-        <button
+          onPointerDown={toggleMute}
           onClick={toggleMute}
-          className="rounded-full bg-black/70 text-white px-4 py-2 text-xs backdrop-blur shadow hover:bg-black"
+          className="rounded-full bg-black/70 text-white px-4 py-2 text-xs backdrop-blur shadow hover:bg-black active:scale-[0.98]"
           aria-label={muted ? 'Activar sonido' : 'Silenciar'}
         >
           {muted ? '🔇 Silencio' : '🔊 Sonido'}
