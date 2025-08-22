@@ -109,7 +109,7 @@ export default function Home() {
           <div className="bg-white text-black rounded-2xl p-6 max-w-sm w-full shadow-lg text-center">
             <h2 className="text-xl font-semibold mb-2">¡Bienvenid@ a nuestra invitación!</h2>
             <p className="text-sm text-gray-700 mb-4">
-              Con mucho cariño, gracias a Silvia Tejeda por regalarnos su canción para ambientar este recorrido.
+              Con mucho cariño, gracias a Silvia Tejeira por regalarnos su canción para ambientar este recorrido.
             </p>
             {/* Acá podés poner tu texto personalizado extra */}
             <button
@@ -140,12 +140,12 @@ export default function Home() {
 
       {/* --------- TU CONTENIDO ACTUAL --------- */}
       <img src="/img/encabezado.png" alt="encabezado" className="w-full h-1600 sm:w-[200px] mb-2" />
-      <p className="text-black text-xl px-20 py-20 mb-auto mt-[-6em]">Un sí para toda la vida</p>
+      <img src="/img/unsi.png" alt="un si para toda la vida" className="mt-5 w-[700px] h-auto sm:w-[200px] mb-4" />
       <img src="/icons/ML.svg" alt="Anillos" className="w-[170px] sm:w-[200px] mb-2" />
-      <p className="text-black px-20 py-20 mb-10 w-auto">
-        Después de tanto buscarnos nos encontramos,<br />
-        ahora nos elegimos y decidimos caminar juntos<br />
-        la vida... nada sería igual sin vos en este día<br />
+      <p className="text-black px-[40px] py-20 mb-10 w-auto">
+        Después de tanto buscarnos nos encontramos,
+        ahora nos elegimos y decidimos caminar juntos
+        la vida... nada sería igual sin vos en este día
         tan importante para nosotros.
       </p>
 
@@ -285,6 +285,9 @@ export default function Home() {
       </section>
 
       <img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-5 w-[300px] sm:w-[200px] mb-4" />
+
+      <img src="/img/detalle-especial.png" alt="un detalle especial" className="mt-5 w-[300px] sm:w-[200px] mb-4" />
+
       <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
     </main>
   )

@@ -71,8 +71,8 @@ body {
 .book {
   position: relative;
   border-radius: 10px;
-  width: 320px;
-  height: 400px;
+  width: 450px;
+  height: 600px;
   background-image: url('/img/album.png');
   background-size: cover;
   background-repeat: no-repeat;
