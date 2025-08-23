@@ -93,10 +93,10 @@ export default function BgmProvider() {
     <>
       {/* Modal inicial (no desaparece por scroll) */}
       {showTapHint && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 px-6">
-          <div className="bg-white text-black rounded-2xl p-6 max-w-sm w-full shadow-lg text-center">
+        <div className="fixed inset-0 z-[9999] flex flex-col justify-center px-4 pt-32 pb-10 min-h-screen">
+          <div className="bg-white bg-opacity-[0.6] text-black rounded-xl px-5 py-6 w-full max-w-sm mx-auto shadow-lg text-center mt-[50px]">
             <h2 className="text-xl font-semibold mb-2">¡Bienvenid@ a nuestra invitación!</h2>
-            <p className="text-sm text-gray-700 mb-4">
+            <p className="text-sm text-gray-700 mb-4 px-4">
               Con mucho cariño, gracias a Silvia Tejeira por regalarnos su canción para ambientar este recorrido.
             </p>
             <button
