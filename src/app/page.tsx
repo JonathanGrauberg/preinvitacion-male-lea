@@ -17,7 +17,7 @@ export default function Home() {
   const [showVestimentaText, setShowVestimentaText] = useState(false)
 
   return (
-    <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center relative">
+    <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center z-0">
 
 
       {/* --------- TU CONTENIDO ACTUAL --------- */}

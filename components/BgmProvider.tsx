@@ -93,24 +93,32 @@ export default function BgmProvider() {
     <>
       {/* Modal inicial (no desaparece por scroll) */}
       {showTapHint && (
-        <div className="fixed inset-0 z-[9999] flex flex-col justify-center px-4 pt-32 pb-10 min-h-screen">
-          <div className="bg-white bg-opacity-[0.6] text-black rounded-xl px-5 py-6 w-full max-w-sm mx-auto shadow-lg text-center mt-[50px]">
-            <h2 className="text-xl font-semibold mb-2">¡Bienvenid@ a nuestra invitación!</h2>
-            <p className="text-sm text-gray-700 mb-4 px-4">
-              Con mucho cariño, gracias a Silvia Tejeira por regalarnos su canción para ambientar este recorrido.
-            </p>
-            <button
-              onClick={handleComenzar}
-              className="inline-flex items-center justify-center rounded-full bg-doradoboda text-white px-5 py-2 text-sm font-medium shadow hover:brightness-95 active:scale-[0.98]"
-            >
-              Comenzar
-            </button>
-            <p className="text-[11px] text-gray-500 mt-3">
-              Podrás silenciarla cuando quieras.
-            </p>
-          </div>
-        </div>
-      )}
+    <div className="w-full px-4 py-6 flex justify-center mt-0">
+      <div className="bg-white text-black rounded-xl px-4 py-6 w-full max-w-sm shadow-lg text-center">
+        <h2 className="text-xl font-semibold mb-2">¡Bienvenid@ a nuestra invitación!</h2>
+        <p className="text-sm text-gray-700 mb-4">
+          Con mucho cariño, gracias a Silvia Tejeira por regalarnos su canción para ambientar este recorrido.
+        </p>
+        <button
+          onClick={handleComenzar}
+          className="inline-flex items-center justify-center rounded-full bg-doradoboda text-white px-5 py-2 text-sm font-medium shadow hover:brightness-95 active:scale-[0.98]">
+          Comenzar
+        </button>
+        <p className="text-[5px] text-gray-500 mt-3">
+          Podrás silenciarla cuando quieras.
+        </p>
+      </div>
+    </div>
+  )}
+
+
+
+
+
+
+
+
+
 
       {/* Botón flotante global: Silencio/Sonido */}
       <div className="fixed bottom-6 right-6 z-[9998]">

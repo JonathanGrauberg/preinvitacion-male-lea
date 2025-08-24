@@ -50,12 +50,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {/* Player global persistente */}
-        
-        {children}
         <BgmProvider />
+        {children}
+        
       </body>
     </html>
   );
