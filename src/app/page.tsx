@@ -9,6 +9,7 @@ import Countdown from '../../components/Countdown'
 import MoreButton from '../../components/MoreButton'
 import LibroAnimado from '../../components/LibroAnimado'
 import CostoPorPersona from '../../components/CostoPorPersona'
+import ModalInicio from '../../components/ModalInicio'
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'] })
 const greatVibes = Great_Vibes({ subsets: ['latin'], weight: '400' })
@@ -17,7 +18,9 @@ export default function Home() {
   const [showVestimentaText, setShowVestimentaText] = useState(false)
 
   return (
+    
     <main className="min-h-screen bg-white text-white text-center flex flex-col items-center justify-center z-0">
+       
 
 
       {/* --------- TU CONTENIDO ACTUAL --------- */}
@@ -171,6 +174,8 @@ export default function Home() {
       <img src="/img/detalle-especial.png" alt="un detalle especial" className="mt-5 w-[300px] sm:w-[200px] mb-4" />
 
       <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
+
+      <ModalInicio />
     </main>
   )
 }
