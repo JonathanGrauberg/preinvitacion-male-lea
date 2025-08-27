@@ -25,8 +25,8 @@ export default function Home() {
 
       {/* --------- TU CONTENIDO ACTUAL --------- */}
       <img src="/img/encabezado.png" alt="encabezado" className="w-full h-1600 sm:w-[200px] mb-2" />
-      <img src="/img/unsi.png" alt="un si para toda la vida" className="mt-5 w-[700px] h-auto sm:w-[200px] mb-4" />
-      <img src="/icons/ML.svg" alt="Anillos" className="w-[170px] sm:w-[200px] mb-2" />
+      <img src="/img/unsi.png" alt="un si para toda la vida" className="mt-20 w-[700px] h-auto sm:w-[200px] mb-4" />
+      <img src="/icons/ML.svg" alt="ML" className="mt-20 w-[170px] sm:w-[200px] mb-2" />
       <p className="text-black px-[40px] py-20 mb-10 w-auto">
         Después de tanto buscarnos nos encontramos,
         ahora nos elegimos y decidimos caminar juntos
