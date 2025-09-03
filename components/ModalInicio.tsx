@@ -49,7 +49,7 @@ export default function ModalInicio() {
           ¡Bienvenidos a nuestra invitación!
         </h2>
         <p className="text-sm text-gray-700 mb-4">
-          Con mucho cariño, gracias a Silvia Tejeira por regalarnos su canción para ambientar este recorrido.
+          Con mucho cariño, gracias a Silvia Tejeira por regalarnos su música para ambientar este recorrido.
         </p>
         <button
           onClick={handleComenzar}
