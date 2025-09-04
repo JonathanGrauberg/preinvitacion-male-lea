@@ -48,15 +48,28 @@ export default function BgmProvider() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9998]">
-      <button
-        onClick={toggleMute}
-        className="rounded-full bg-black/70 text-white px-4 py-2 text-xs backdrop-blur shadow hover:bg-black active:scale-[0.98] min-w-[110px]"
-        aria-label={muted ? 'Activar sonido' : 'Silenciar'}
-        aria-pressed={!muted}
+  <div className="fixed bottom-6 right-6 z-[9998]">
+    <button
+      onClick={toggleMute}
+      className="rounded-full bg-black/70 text-white px-4 py-2 text-xs backdrop-blur shadow hover:bg-black active:scale-[0.98] min-w-[110px] flex items-center justify-center"
+      aria-label={muted ? 'Activar sonido' : 'Silenciar'}
+      aria-pressed={!muted}
+    >
+      <span
+        style={{
+          fontSize: "20px",
+          fontWeight: "bold",
+          display: "inline-block",
+          lineHeight: "1",
+        }}
       >
-        {muted ? '🔇 Silencio' : '🔊 Sonido'}
-      </button>
-    </div>
-  )
+        {muted ? "▶" : "⏸"}
+      </span>
+      <span style={{ marginLeft: "8px" }}>
+        {muted ? "Play" : "Pause"}
+      </span>
+    </button>
+  </div>
+);
+
 }

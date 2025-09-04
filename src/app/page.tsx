@@ -186,6 +186,7 @@ export default function Home() {
 
       <img src="/img/ovalo.png" alt="ovalo" className="mt-[6rem] w-full sm:w-[200px] mb-4" />
       <img src="/icons/maleylea.svg" alt="maleylea" className="mt-auto w-[300px] sm:w-[200px] mb-4" />
+      
 
       <section className="text-center text-gray-300 mt-16 px-4 items-center mb-5">
         <ConfirmButton />
@@ -207,7 +208,11 @@ export default function Home() {
 
       <img src="/img/detalle-especial.png" alt="un detalle especial" className="mt-5 w-[300px] sm:w-[200px] mb-4" />
 
-      <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[100px]" />
+      <img src="/icons/ML.svg" alt="Anillos" className="mt-20 w-[170px] sm:w-[200px] mb-[50px]" />
+
+      <p className="text-sm text-grayblack mb-4 mt-1 px-[70px]">
+          Con mucho cariño, gracias a Silvia Tejeira por regalarnos su música para ambientar este recorrido.
+      </p>
 
       <ModalInicio />
     </main>
