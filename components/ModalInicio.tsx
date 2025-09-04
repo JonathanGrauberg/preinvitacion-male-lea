@@ -48,9 +48,7 @@ export default function ModalInicio() {
         <h2 style={{ fontSize: '40px'}} className={`${dmSerif.className} mb-2`}>
           ¡Bienvenidos a nuestra invitación!
         </h2>
-        <p className="text-sm text-gray-700 mb-4">
-          Con mucho cariño, gracias a Silvia Tejeira por regalarnos su música para ambientar este recorrido.
-        </p>
+        
         <button
           onClick={handleComenzar}
           style={{background: '#f4882adf',
