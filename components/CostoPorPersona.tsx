@@ -38,7 +38,7 @@ export default function CostoPorPersona() {
             
             <div className="py-1 text-[0.9rem]">
               <p className="text-black">$ 60.000 por persona.</p>
-              <p className="text-gray-500 py-2">(solo para mayores)</p>
+              <p className="text-gray-500 py-2">(Evento solo para mayores)</p>
             </div>
             <div
               onClick={copyToClipboard}
