@@ -66,9 +66,7 @@ export default function Home() {
           <span className="text-2xl">20:30 hs</span>
         </div>
         </ScrollFadeIn>
-        <ScrollFadeIn direction="up" delay={0.5}>
         
-        </ScrollFadeIn>
       </section>
 
       <section className="text-center mt-12 items-center space-y-3">
