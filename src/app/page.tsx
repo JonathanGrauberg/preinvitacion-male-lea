@@ -67,12 +67,7 @@ export default function Home() {
         </div>
         </ScrollFadeIn>
         <ScrollFadeIn direction="up" delay={0.5}>
-        <button
-          onClick={() => window.open('https://forms.gle/n2cP8u7BhHEDnMKQ7', '_blank')}
-          className="w-[170px] h-[30px] border border-doradoboda text-grayblack rounded flex items-center justify-center hover:bg-doradoboda hover:text-white transition"
-        >
-          <span className="text-[0.7rem]">CONFIRMAR ASISTENCIA</span>
-        </button>
+        
         </ScrollFadeIn>
       </section>
 
