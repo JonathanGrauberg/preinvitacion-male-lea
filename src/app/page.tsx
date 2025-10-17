@@ -197,7 +197,7 @@ export default function Home() {
         <Countdown />
       </section>
 
-      <img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-5 w-[300px] sm:w-[200px] mb-4" />
+      {/*<img src="/img/confirmacion.png" alt="tarjeta confirmacion" className="mt-5 w-[300px] sm:w-[200px] mb-4" />*/}
 
       <img src="/img/detalle-especial.png" alt="un detalle especial" className="mt-5 w-[300px] sm:w-[200px] mb-4" />
 
